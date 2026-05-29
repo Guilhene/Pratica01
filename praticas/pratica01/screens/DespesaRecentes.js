@@ -1,36 +1,37 @@
-import { useContext, useEffect, useState } from 'react';
-import DespesaSaida from '../components/Despesa/DespesaSaida';
-import { DespesasContext } from '../store/despesas-context';
-import { fetchTransactions } from '../util/http';
+import DespesaSaida from "@/components/Despesa/DespesaSaida";
+import { Text } from "react-native";
 
 function DespesaRecentes() {
-    const despesasCtx = useContext(DespesasContext);
-    const [isFetching, setIsFetching] = useState(true);
 
-    useEffect(() => {
-        async function getDespesas() {
-            setIsFetching(true);
-            try {
-                const transactions = await fetchTransactions();
-                const mappedTransactions = (transactions || [])
-                    .filter(t => t !== null && t !== undefined)
-                    .map(t => ({
-                        id: t.id,
-                        descricao: t.description,
-                        valor: +t.value, // Força conversão para número
-                        data: new Date(t.date),
-                        categoryId: t.categoryId
-                    }));
-                despesasCtx.setDespesas(mappedTransactions);
-            } catch (error) {
-                console.error("Erro ao buscar despesas:", error);
-            }
-            setIsFetching(false);
-        }
+    function filtrarUltimos7Dias(despesas){
+        const hoje = new Date();
+        const seteDiasAtras = new Date();
+        seteDiasAtras.setDate(hoje.getDate() - 7);
+        
 
-        getDespesas();
-    }, []);
+        return despesas.filter(despesa => {
+            return despesa.data >= seteDiasAtras && despesa.data <= hoje;
+        })
+    }   
 
+    const DUMMY_DESPESAS = [
+    {
+        id: '1',
+        descricao: 'Conta de luz',
+        valor: 100.99,
+        data: new Date(2026, 3, )
+    },
+    {
+        id: '2',
+        descricao: 'Conta de Agua',
+        valor: 40.99,
+        data: new Date(2025,4,10)
+    }
+    ]
+
+    return(
+        <DespesaSaida despesas={filtrarUltimos7Dias(DUMMY_DESPESAS)} periodo={'Ultimo 7 dias.'}/>
+    )
 }
 
 export default DespesaRecentes;

@@ -1,29 +1,21 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { Colors } from "../../constants/theme";
 
 function getDataFormatada(data) {
-    const d = new Date(data);
-    return d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear();
+    return data.getDate() + '/' + (data.getMonth() + 1) + '/' + data.getFullYear();
 }
 
-function formatCurrency(value) {
-    const num = Number(value);
-    return isNaN(num) ? '0.00' : num.toFixed(2);
-}
-
-function DespesaItem({item, onLongPress}) {
+function DespesaItem({item}) {
     return (
-        <Pressable 
-            onLongPress={() => onLongPress(item)}
-            style={({pressed}) => pressed && styles.pressed}
-        >
+        <Pressable>
             <View style={styles.itemContainer}>
-                <View style={styles.itemTextContainer}>
-                    <Text style={styles.description}>{item.descricao}</Text>
-                    <Text style={styles.date}>{getDataFormatada(item.data)}</Text>
+                <View style={styles.itemText}>
+                    <Text>{getDataFormatada(item.data)}</Text>
                 </View>
-                <View style={styles.amountContainer}>
-                    <Text style={styles.amount}>R$ {formatCurrency(item.valor)}</Text>
+                <View style={styles.itemText}>
+                    <Text>{item.descricao}</Text>
+                </View>
+                <View style={styles.itemText}>
+                    <Text>{item.valor}</Text>
                 </View>
             </View>
         </Pressable>
@@ -31,48 +23,20 @@ function DespesaItem({item, onLongPress}) {
 }
 
 const styles = StyleSheet.create({
-    pressed: {
-        opacity: 0.75
-    },
     itemContainer: {
-        padding: 12,
-        marginVertical: 8,
-        marginHorizontal: 16,
-        backgroundColor: Colors.primary500,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        borderRadius: 6,
-        elevation: 3,
-        shadowColor: 'black',
-        shadowRadius: 4,
-        shadowOffset: { width: 1, height: 1 },
-        shadowOpacity: 0.4,
+        flex: '1',
+        padding: 5,
+        marginVertical: 5,
+        marginHorizontal: 5,
+        backgroundColor: 'lightgray',
+        flexDirection: 'row'
     },
-    itemTextContainer: {
-        flex: 1,
-    },
-    description: {
-        fontSize: 16,
-        marginBottom: 4,
-        fontWeight: 'bold',
-        color: 'white',
-    },
-    date: {
-        fontSize: 12,
-        color: Colors.primary100,
-    },
-    amountContainer: {
-        paddingHorizontal: 12,
-        paddingVertical: 4,
-        backgroundColor: 'white',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 4,
-        minWidth: 80,
-    },
-    amount: {
-        color: Colors.primary500,
-        fontWeight: 'bold',
+    itemText: {
+        flex: '1',
+        padding: 2,
+        marginVertical: 2,
+        marginHorizontal: 2,
+        alignContent: 'left',
     }
 })
 

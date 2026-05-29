@@ -1,36 +1,25 @@
-import { useContext, useEffect, useState } from 'react';
-import DespesaSaida from '../components/Despesa/DespesaSaida';
-import { DespesasContext } from '../store/despesas-context';
-import { fetchTransactions } from '../util/http';
+import DespesaSaida from '@/components/Despesa/DespesaSaida'
 
 function TodasDespesas(){
-    const despesasCtx = useContext(DespesasContext);
-    const [isFetching, setIsFetching] = useState(true);
 
-    useEffect(() => {
-        async function getDespesas() {
-            setIsFetching(true);
-            try {
-                const transactions = await fetchTransactions();
-                const mappedTransactions = (transactions || [])
-                    .filter(t => t !== null && t !== undefined)
-                    .map(t => ({
-                        id: t.id,
-                        descricao: t.description,
-                        valor: +t.value, // Força conversão para número
-                        data: new Date(t.date),
-                        categoryId: t.categoryId
-                    }));
-                despesasCtx.setDespesas(mappedTransactions);
-            } catch (error) {
-                console.error("Erro ao buscar despesas:", error);
-            }
-            setIsFetching(false);
+    const DUMMY_DESPESAS = [
+        {
+            id: '1',
+            descricao: 'Conta de luz',
+            valor: 100.99,
+            data: new Date(2025, 2, 11)
+        },
+        {
+            id: '2',
+            descricao: 'Conta de Agua',
+            valor: 40.99,
+            data: new Date(2025,4,10)
         }
+    ]
 
-        getDespesas();
-    }, []);
-
+    return(
+        <DespesaSaida despesas={DUMMY_DESPESAS} periodo={'Total'}/>
+    )
 }
 
 export default TodasDespesas;

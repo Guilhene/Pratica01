@@ -1,1 +1,0 @@
-Na pagina todos e movimentação nao aprece os dados que foi adicionados, pagina de resumo informa os dados, nao precisa de filter nessas paginas
