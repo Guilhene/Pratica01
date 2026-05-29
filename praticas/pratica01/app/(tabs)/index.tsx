@@ -1,31 +1,35 @@
 import DespesaRecentes from '@/screens/DespesaRecentes';
 import GerenciarDespensa from '@/screens/GerenciarDespesa';
 import TodasDespesas from '@/screens/TodasDespesas';
+import ResumoScreen from '@/screens/ResumoScreen';
 import IconButton from '@/screens/IconButton'
+import LoginScreen from '@/screens/LoginScreen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationContainer, NavigationIndependentTree, useNavigationBuilder } from '@react-navigation/native';
+import { NavigationContainer, NavigationIndependentTree } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { StyleSheet } from 'react-native';
+import { Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'
-import { Colors } from '@/constants/theme';
-import { useNavigation } from 'expo-router';
+import { AuthProvider, useAuth } from '@/store/auth-context';
+import DespesasContextProvider from '@/store/despesas-context';
 
-export default function HomeScreen() {
+function Navigation() {
+  const { user } = useAuth();
 
   const Tab = createBottomTabNavigator();
+  const Stack = createNativeStackNavigator();
 
   function BottonTabScreen() {
-    const navigation = useNavigationBuilder;
-
     return (
       <Tab.Navigator 
-        /*screenOptions={{headerRight: () => <IconButton
-          icon='add' size={24} onPress={() => { 
-            
-           } } color={undefined}/>
-        }}*/
-        screenOptions={({navigation} ) => ({ headerRight: () => <IconButton
-          icon='add' size={24} onPress={() => {navigation.navigate('GerenciarDespesa')}}/>
+        screenOptions={({navigation} ) => ({ 
+          headerRight: () => <IconButton
+            icon='add' size={24} onPress={() => {navigation.navigate('GerenciarDespesa')}}/>,
+          headerTitle: () => (
+            <View>
+              <Text style={{fontSize: 18, fontWeight: 'bold'}}>Gestão Financeira</Text>
+              {user && <Text style={{fontSize: 12}}>Bem-vindo, {user.name}!</Text>}
+            </View>
+          )
         })}
         >
         <Tab.Screen 
@@ -46,11 +50,22 @@ export default function HomeScreen() {
           tabBarLabelStyle: {fontSize: 12}
         }}
         ></Tab.Screen>
+        <Tab.Screen 
+        name='Resumo' component={ResumoScreen}
+        options={{tabBarIcon: ({color, size}) => (
+          <Ionicons name='pie-chart-outline' size={size} color={color} />),
+          tabBarLabel: 'Resumo',
+          title: 'Resumo',
+          tabBarLabelStyle: {fontSize: 12}
+        }}
+        ></Tab.Screen>
       </Tab.Navigator>
     );
   }
 
-  const Stack = createNativeStackNavigator();
+  if (!user) {
+    return <LoginScreen />;
+  }
 
   return (
     <NavigationIndependentTree>
@@ -65,11 +80,13 @@ export default function HomeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center'
-  }
-});
+export default function HomeScreen() {
+  return (
+    <AuthProvider>
+      <DespesasContextProvider>
+        <Navigation />
+      </DespesasContextProvider>
+    </AuthProvider>
+  );
+}
+
