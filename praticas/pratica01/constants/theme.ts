@@ -9,6 +9,14 @@ const tintColorLight = '#0a7ea4';
 const tintColorDark = '#fff';
 
 export const Colors = {
+  primary100: '#f1f1f1', // Quase branco para fundos de input/cards claros
+  primary200: '#e1a6ff',
+  primary400: '#a366ff',
+  primary500: '#7c00db', // Roxo principal
+  primary700: '#4e008a', // Roxo escuro para fundos
+  primary800: '#2c0052', // Roxo muito escuro para texto
+  accent500: '#ffcc00',
+  error500: '#f44336',
   light: {
     text: '#11181C',
     background: '#fff',
