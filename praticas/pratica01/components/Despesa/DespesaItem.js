@@ -1,29 +1,61 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import { Colors } from "../../constants/theme";
+import { Pressable, StyleSheet, Text, View, Alert } from "react-native";
+import { useNavigation } from '@react-navigation/native';
+import { useContext } from 'react';
+import { DespesasContext } from '@/store/despesas-context';
+import { deleteTransaction } from '@/util/http';
 
 function getDataFormatada(data) {
-    const d = new Date(data);
-    return d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear();
+    if (!(data instanceof Date)) {
+        data = new Date(data);
+    }
+    return data.getDate() + '/' + (data.getMonth() + 1) + '/' + data.getFullYear();
 }
 
-function formatCurrency(value) {
-    const num = Number(value);
-    return isNaN(num) ? '0.00' : num.toFixed(2);
-}
+function DespesaItem({item}) {
+    const navigation = useNavigation();
+    const despesasCtx = useContext(DespesasContext);
 
-function DespesaItem({item, onLongPress}) {
+    function handlePress() {
+        navigation.navigate('GerenciarDespesa', {
+            despesaId: item.id
+        });
+    }
+
+    async function handleDelete() {
+        try {
+            await deleteTransaction(item.id);
+            despesasCtx.deleteDespesa(item.id);
+        } catch (_error) {
+            Alert.alert('Erro', 'Não foi possível excluir a despesa.');
+        }
+    }
+
+    function handleLongPress() {
+        Alert.alert(
+            'Opções',
+            'O que você deseja fazer?',
+            [
+                { text: 'Editar', onPress: handlePress },
+                { text: 'Excluir', onPress: handleDelete, style: 'destructive' },
+                { text: 'Cancelar', style: 'cancel' }
+            ]
+        );
+    }
+
     return (
         <Pressable 
-            onLongPress={() => onLongPress(item)}
+            onPress={handlePress} 
+            onLongPress={handleLongPress}
             style={({pressed}) => pressed && styles.pressed}
         >
             <View style={styles.itemContainer}>
-                <View style={styles.itemTextContainer}>
-                    <Text style={styles.description}>{item.descricao}</Text>
-                    <Text style={styles.date}>{getDataFormatada(item.data)}</Text>
+                <View style={styles.itemTextMain}>
+                    <Text style={styles.dateText}>{getDataFormatada(item.data)}</Text>
+                    <Text style={styles.descriptionText}>{item.descricao}</Text>
+                    {item.category && <Text style={styles.categoryText}>{item.category.displayName}</Text>}
                 </View>
                 <View style={styles.amountContainer}>
-                    <Text style={styles.amount}>R$ {formatCurrency(item.valor)}</Text>
+                    <Text style={styles.amountText}>R$ {item.valor.toFixed(2)}</Text>
                 </View>
             </View>
         </Pressable>
@@ -31,48 +63,50 @@ function DespesaItem({item, onLongPress}) {
 }
 
 const styles = StyleSheet.create({
-    pressed: {
-        opacity: 0.75
-    },
     itemContainer: {
         padding: 12,
         marginVertical: 8,
         marginHorizontal: 16,
-        backgroundColor: Colors.primary500,
+        backgroundColor: '#fff',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        borderRadius: 6,
-        elevation: 3,
-        shadowColor: 'black',
-        shadowRadius: 4,
-        shadowOffset: { width: 1, height: 1 },
-        shadowOpacity: 0.4,
+        borderRadius: 8,
+        elevation: 2,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.2,
+        shadowRadius: 2,
     },
-    itemTextContainer: {
-        flex: 1,
+    pressed: {
+        opacity: 0.7,
     },
-    description: {
+    itemTextMain: {
+        flex: 3,
+    },
+    dateText: {
+        fontSize: 10,
+        color: '#666',
+        marginBottom: 2,
+    },
+    descriptionText: {
         fontSize: 16,
-        marginBottom: 4,
         fontWeight: 'bold',
-        color: 'white',
+        color: '#333',
     },
-    date: {
+    categoryText: {
         fontSize: 12,
-        color: Colors.primary100,
+        color: '#7209b7',
+        marginTop: 2,
     },
     amountContainer: {
-        paddingHorizontal: 12,
-        paddingVertical: 4,
-        backgroundColor: 'white',
+        flex: 1,
         justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 4,
-        minWidth: 80,
+        alignItems: 'flex-end',
     },
-    amount: {
-        color: Colors.primary500,
+    amountText: {
+        fontSize: 16,
         fontWeight: 'bold',
+        color: '#333',
     }
 })
 

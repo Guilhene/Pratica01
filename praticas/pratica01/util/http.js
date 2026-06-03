@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BACKEND_URL = 'http://172.27.1.105:3000'; // Substituído localhost pelo IP da máquina
+const BACKEND_URL = 'http://192.168.0.93:3000';
 
 export async function storeTransaction(transactionData) {
   const response = await axios.post(BACKEND_URL + '/transactions', transactionData);

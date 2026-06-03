@@ -1,7 +1,8 @@
 import { useContext, useEffect, useState } from 'react';
-import DespesaSaida from '../components/Despesa/DespesaSaida';
-import { DespesasContext } from '../store/despesas-context';
-import { fetchTransactions } from '../util/http';
+import DespesaSaida from "@/components/Despesa/DespesaSaida";
+import { DespesasContext } from '@/store/despesas-context';
+import { fetchTransactions } from '@/util/http';
+import { Text, View, StyleSheet, ActivityIndicator } from 'react-native';
 
 function DespesaRecentes() {
     const despesasCtx = useContext(DespesasContext);
@@ -12,18 +13,17 @@ function DespesaRecentes() {
             setIsFetching(true);
             try {
                 const transactions = await fetchTransactions();
-                const mappedTransactions = (transactions || [])
-                    .filter(t => t !== null && t !== undefined)
-                    .map(t => ({
-                        id: t.id,
-                        descricao: t.description,
-                        valor: +t.value, // Força conversão para número
-                        data: new Date(t.date),
-                        categoryId: t.categoryId
-                    }));
-                despesasCtx.setDespesas(mappedTransactions);
+                // O backend retorna datas como string ISO, o context espera objetos Date?
+                // Vamos converter para garantir consistência se necessário.
+                const loadedTransactions = transactions.map(t => ({
+                    ...t,
+                    data: new Date(t.date),
+                    descricao: t.description,
+                    valor: t.value
+                }));
+                despesasCtx.setDespesas(loadedTransactions);
             } catch (error) {
-                console.error("Erro ao buscar despesas:", error);
+                console.log(error);
             }
             setIsFetching(false);
         }
@@ -31,6 +31,38 @@ function DespesaRecentes() {
         getDespesas();
     }, []);
 
+    function filtrarUltimos7Dias(despesas) {
+        const hoje = new Date();
+        const seteDiasAtras = new Date();
+        seteDiasAtras.setDate(hoje.getDate() - 7);
+
+        return despesas.filter(despesa => {
+            const dataDespesa = new Date(despesa.data);
+            return dataDespesa >= seteDiasAtras && dataDespesa <= hoje;
+        });
+    }
+
+    if (isFetching) {
+        return (
+            <View style={styles.container}>
+                <ActivityIndicator size="large" color="#0000ff" />
+            </View>
+        );
+    }
+
+    const recentesDespesas = filtrarUltimos7Dias(despesasCtx.despesas);
+
+    return (
+        <DespesaSaida despesas={recentesDespesas} periodo={'Últimos 7 dias'} />
+    );
 }
 
 export default DespesaRecentes;
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+});

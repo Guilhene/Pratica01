@@ -1,18 +1,21 @@
-import { FlatList } from "react-native";
-import DespesaItem from './DespesaItem';
+import { FlatList, StyleSheet } from "react-native";
+import DespesaItem from '@/components/Despesa/DespesaItem'
 
-function DespesaLista({ despesas, onLongPress }) {
-
+function DespesaLista({ despesas }) {
     return (
         <FlatList 
             data={despesas} 
-            renderItem={({ item }) => {
-                if (!item) return null;
-                return <DespesaItem item={item} onLongPress={onLongPress}/>;
-            }}
-            keyExtractor={(item) => item?.id || Math.random().toString()} 
+            renderItem={({ item }) => <DespesaItem item={item}/> }
+            keyExtractor={(item) => item.id}
+            contentContainerStyle={styles.listContainer}
         />
     )
 }
+
+const styles = StyleSheet.create({
+    listContainer: {
+        paddingBottom: 20
+    }
+});
 
 export default DespesaLista;

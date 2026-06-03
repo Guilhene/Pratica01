@@ -1,38 +1,42 @@
-import { StyleSheet, Text, View } from "react-native";
-import { Colors } from "../../constants/theme";
+import { Text, View, StyleSheet } from "react-native";
 
 function DespesaSumario({despesas, periodo}){
-    const somaDespesas = despesas ? despesas.reduce((total, despesa) => {
-        if (!despesa || isNaN(Number(despesa.valor))) return total;
-        return total + Number(despesa.valor);
-    }, 0) : 0;
+    const somaDespesas = despesas.reduce((total, despesa) => {
+        return total + despesa.valor;
+    }, 0);
     
     return(
         <View style={styles.container}>
-            <Text style={styles.period}>{periodo}</Text>
-            <Text style={styles.sum}>R$ {somaDespesas.toFixed(2)}</Text>
+            <Text style={styles.periodText}>{periodo}</Text>
+            <Text style={styles.sumText}>R$ {somaDespesas.toFixed(2)}</Text>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-        padding: 8,
-        backgroundColor: Colors.primary100,
-        borderRadius: 6,
+        padding: 16,
+        backgroundColor: '#7209b7',
+        borderRadius: 8,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        margin: 16,
+        marginHorizontal: 16,
+        marginVertical: 8,
+        elevation: 4,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
     },
-    period: {
-        fontSize: 12,
-        color: Colors.primary700,
+    periodText: {
+        fontSize: 14,
+        color: '#fff',
     },
-    sum: {
-        fontSize: 16,
+    sumText: {
+        fontSize: 18,
         fontWeight: 'bold',
-        color: Colors.primary800,
+        color: '#fff',
     }
 });
 

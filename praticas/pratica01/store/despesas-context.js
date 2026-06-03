@@ -1,11 +1,11 @@
-import { createContext, useReducer } from 'react';
+import React, { createContext, useReducer } from 'react';
 
 export const DespesasContext = createContext({
   despesas: [],
-  addDespesa: ({ descricao, valor, data, categoryId }) => {},
+  addDespesa: (despesaData) => {},
   setDespesas: (despesas) => {},
   deleteDespesa: (id) => {},
-  updateDespesa: (id, { descricao, valor, data, categoryId }) => {},
+  updateDespesa: (id, despesaData) => {},
 });
 
 function despesasReducer(state, action) {
@@ -13,8 +13,7 @@ function despesasReducer(state, action) {
     case 'ADD':
       return [action.payload, ...state];
     case 'SET':
-      const inverted = action.payload.reverse();
-      return inverted;
+      return action.payload.reverse();
     case 'UPDATE':
       const updatableDespesaIndex = state.findIndex(
         (despesa) => despesa.id === action.payload.id
