@@ -1,4 +1,4 @@
-# Projeto de Gestão Financeira 📱💰
+# Projeto de Gestão Financeira
 
 Este é um projeto full-stack de gestão financeira pessoal, composto por um aplicativo mobile (React Native/Expo) e uma API REST (Node.js/Express).
 
@@ -13,7 +13,7 @@ Antes de começar, você precisará ter instalado em sua máquina:
 
 ---
 
-## 🚀 Como Rodar o Projeto
+## Como Rodar o Projeto
 
 ### 1. Configurar o Backend (API)
 
@@ -61,7 +61,7 @@ Antes de começar, você precisará ter instalado em sua máquina:
 
 ---
 
-## 📑 Documentação da API (Endpoints)
+## Documentação da API (Endpoints)
 
 ### Categorias (`/categories`)
 - `GET /categories`: Lista todas as categorias.
@@ -79,7 +79,7 @@ Antes de começar, você precisará ter instalado em sua máquina:
 
 ---
 
-## ✨ Funcionalidades do App
+## Funcionalidades do App
 - **Resumo Visual:** Gráfico de pizza por categoria.
 - **Filtros:** Visualize gastos por Tudo, Mês Atual ou Ano Atual na tela de Resumo.
 - **Gestão de Categorias:** Adicione categorias personalizadas diretamente pela tela de cadastro.
@@ -87,6 +87,6 @@ Antes de começar, você precisará ter instalado em sua máquina:
 
 ---
 
-## 🧰 Tecnologias Utilizadas
+## Tecnologias Utilizadas
 - **Frontend:** React Native, Expo, Axios, React Native Chart Kit.
 - **Backend:** Node.js, Express, Prisma ORM, PostgreSQL, Zod (Validação).
